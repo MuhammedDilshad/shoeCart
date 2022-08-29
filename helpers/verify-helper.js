@@ -1,4 +1,5 @@
-const { resolve, reject } = require('promise');
+
+require('dotenv').config()
 
 
 const client = require('twilio')(process.env.TWILIO_ACCOUNTID, process.env.TWILIO_ACCOUNT_TOCKEN);

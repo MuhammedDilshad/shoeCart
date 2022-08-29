@@ -1,8 +1,9 @@
-const { resolve, reject } = require('promise')
+
 var db = require('../config/connection')
 var collection = require('../config/connections')
 const Razorpay = require('razorpay');
 const { ObjectId } = require('mongodb');
+require('dotenv').config()
 
 var instance = new Razorpay({
     key_id: process.env.RAZORPAY_KEYID,
