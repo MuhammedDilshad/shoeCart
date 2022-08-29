@@ -34,7 +34,7 @@ router.post('/login', (req, res) => {
       res.redirect('/admin')
     } else {
       req.session.loginErr = 'Invaild Email or Password'
-      res.redirect('/login')
+      res.redirect('admin/login')
     }
   })
 })

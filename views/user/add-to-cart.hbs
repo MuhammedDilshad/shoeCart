@@ -91,7 +91,7 @@
                             </div>
                             <div class="one-eight text-center">
                                 <div class="display-tc">
-                                    <span class="price">{{this.product.productData.price}}</span>
+                                    <span class="price" id="{{this._id}}-price">{{this.product.productData.price}}</span>
                                 </div>
                             </div>
                             <div class="one-eight text-center mt-4">
@@ -104,7 +104,7 @@
                             </div>
                             <div class="one-eight text-center">
                                 <div id="aaa" class="display-tc">
-                                    <span class="price">{{productTotal this.quantity
+                                    <span id="{{this._id}}-total" class="price">{{productTotal this.quantity
                                         this.product.productData.price}}</span>
                                 </div>
                             </div>
@@ -289,6 +289,7 @@
         function changeQty(cartId, proId, userId, count) {
             let quantity = parseInt(document.getElementById(proId).innerHTML)
             count = parseInt(count)
+            let intividualPrice = parseInt(document.getElementById(cartId + '-price').innerHTML)
             $.ajax({
 
                 url: '/changeProductQuantiy',
@@ -301,6 +302,7 @@
                 },
                 method: 'post',
                 success: (response) => {
+                    console.log(response)
                     if (response.removeProduct) {
                         swal("Your Cart Item has been remved!", {
                             icon: "success",
@@ -309,7 +311,7 @@
                     } else {
                         document.getElementById(proId).innerHTML = quantity + count
                         document.getElementById('total').innerHTML = response.total
-
+                        document.getElementById(cartId + '-total').innerHTML = intividualPrice * (quantity + count)
                     }
                 }
             })
