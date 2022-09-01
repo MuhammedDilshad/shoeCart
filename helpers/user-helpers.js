@@ -25,21 +25,23 @@ module.exports = {
             let loginStatus = false
             let response = {}
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ Email: userData.Email })
-            if (user) {
-                bcrypt.compare(userData.Password, user.Password).then((status) => {
-                    if (status) {
-                        console.log('login success');
-                        response.user = user
-                        response.status = true
-                        resolve(response)
-                    } else {
-                        console.log('failed');
-                        resolve({ status: false })
-                    }
-                })
-            }
-            else {
-                console.log('no');
+            if (!user.isBlocked) {
+                if (user) {
+                    bcrypt.compare(userData.Password, user.Password).then((status) => {
+                        if (status) {
+                            console.log('login success');
+                            response.user = user
+                            response.status = true
+                            resolve(response)
+                        } else {
+                            resolve({ status: false })
+                        }
+                    })
+                }
+                else {
+                    resolve({ status: false })
+                }
+            } else {
                 resolve({ status: false })
             }
         })
@@ -260,7 +262,12 @@ module.exports = {
     },
     placeOrder: (order, products, total) => {
         return new Promise((resolve, reject) => {
-            console.log(order, products, total);
+            let dateObj = new Date();
+            let month = dateObj.getUTCMonth() + 1;
+            let year = dateObj.getUTCFullYear();
+            let day = dateObj.getUTCDate();
+            let currentDate = day + "/" + month + "/" + year;
+            
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending'
             let orderObj = {
                 deliveryDetails: {
@@ -275,7 +282,7 @@ module.exports = {
                 products: products,
                 totalAmount: total,
                 status: status,
-                date: new Date()
+                date:currentDate
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
                 db.get().collection(collection.CART_COLLECTION).deleteOne({ user: ObjectId(order.userId) })
@@ -338,20 +345,20 @@ module.exports = {
     },
     editProfile: (data) => {
         return new Promise((resolve, reject) => {
-         db.get().collection(collection.USER_COLLECTION).updateOne({ _id: ObjectId(data.userId) },
+            db.get().collection(collection.USER_COLLECTION).updateOne({ _id: ObjectId(data.userId) },
                 {
                     $set: {
                         Name: data.Name,
                     }
                 }
-            ).then((res) => {  
+            ).then((res) => {
                 resolve(res)
             })
         })
     },
-    getUserData:(userId)=>{
-        return new Promise(async(resolve,reject)=>{
-            let userData=await db.get().collection(collection.USER_COLLECTION).findOne({_id:ObjectId(userId)})
+    getUserData: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let userData = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: ObjectId(userId) })
             resolve(userData)
         })
     }

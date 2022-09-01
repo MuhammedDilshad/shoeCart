@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
@@ -121,28 +123,24 @@
                                         <div class="total-wrap">
                                             <div class="row">
                                                 <div class="col-sm-8">
-                                                    <form action="#">
-                                                        <div class="row form-group">
-                                                            <div class="col-sm-9">
-                                                                <input type="text" name="quantity"
-                                                                    class="form-control input-number"
-                                                                    placeholder="Your Coupon Number...">
-                                                            </div>
-                                                            <div class="col-sm-3">
-                                                                <input type="submit" value="Apply Coupon"
-                                                                    class="btn btn-primary">
-                                                            </div>
+                                                    <form id="couponForm">
+                                                        <label class="control-label text-dark font-weight-bold"
+                                                            for="UserCoupon">User
+                                                            Coupon</label>
+                                                        <div class=" addInput">
+                                                            <input class="mx-3 border-0 px-3rounded-pill w-50 text-dark"
+                                                                id="coupon" placeholder="Coupon Code" name="CouponCode"
+                                                                type="text">
+                                                            <button class="btn_1 border-1" type="submit">Coupon</button>
                                                         </div>
+
                                                     </form>
                                                 </div>
                                                 <div class="col-sm-4 text-center">
                                                     <div class="total">
-                                                        {{!-- <div class="sub">
-                                                            <p><span>Subtotal:</span> <span>$200.00</span></p>
-                                                            <p><span>Delivery:</span> <span>$0.00</span></p>
-                                                            <p><span>Discount:</span> <span>$45.00</span></p>
-                                                        </div> --}}
                                                         <div class="grand-total">
+                                                            <span id="discount"><strong>Discount:</strong>00</span>
+
                                                             <p><span><strong>Total:</strong></span> <span id="total">$
                                                                     {{totalAmount}}</span>
                                                             </p>
@@ -283,8 +281,41 @@
     <div class="gototop js-top">
         <a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
     </div>
+
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
+        $('#couponForm').submit((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: '/applyCoupon',
+                method: 'post',
+                data: $('#couponForm').serialize(),
+                success: (resource) => {
+                    if (resource.status) {
+                        swal({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Coupon Success',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                        document.getElementById('discount').innerHTML = resource.discountPrice
+                        document.getElementById('total').innerHTML = resource.discountTotal
+
+                    }
+                    else {
+                        swal({
+                            position: 'center',
+                            icon: 'failed',
+                            title: 'Invalid coupon 😔',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    }
+                }
+            })
+        })
+
         function changeQty(cartId, proId, userId, count) {
             let quantity = parseInt(document.getElementById(proId).innerHTML)
             count = parseInt(count)
@@ -344,6 +375,8 @@
                     }
                 });
         }
+
+
     </script>
 </body>
 

@@ -8,6 +8,7 @@ const multer = require('../middleware/multer');
 const async = require('hbs/lib/async');
 const userHelpers = require('../helpers/user-helpers');
 const bannerHelpers = require('../helpers/banner-helpers');
+const couponHelpers = require('../helpers/couponHelpers')
 
 
 /* GET users listing. */
@@ -105,14 +106,14 @@ router.post('/edit-product/:id', store.array('Image', 3), (req, res) => {
 })
 
 router.get('/category-management', (req, res) => {
-  categoryHelper.viewCategory().then((category) => {
-    console.log(category);
-    if (req.session.adminLoggedIn) {
+  if (req.session.adminLoggedIn) {
+    categoryHelper.viewCategory().then((category) => {
       res.render('admin/category', { category, layout: 'adminlayout', admin: true })
-    } else {
-      res.redirect('/admin/login')
-    }
-  })
+    })
+  } else {
+    res.redirect('/admin/login')
+  }
+
 })
 
 router.get('/addCategory', ((req, res) => {
@@ -275,6 +276,45 @@ router.get('/dashBoard', (req, res) => {
     res.render('admin/admin-dashboard', { layout: 'adminlayout', admin: true })
   } else {
     res.redirect('/admin/login')
+  }
+})
+
+router.get('/coupon', async (req, res) => {
+  if (req.session.adminLoggedIn) {
+    let coupon = await couponHelpers.getAllCoupon()
+    res.render('admin/coupon', { coupon, layout: 'adminlayout', admin: true })
+  } else {
+    res.redirect('/admin/login')
+  }
+})
+
+router.get('/addCoupon', (req, res) => {
+  if (req.session.adminLoggedIn) {
+    res.render('admin/addCoupon', { layout: 'adminlayout', admin: true })
+  } else {
+    res.redirect('/admin/login')
+  }
+})
+
+router.post('/addCoupon', (req, res) => {
+  if (req.session.adminLoggedIn) {
+    couponHelpers.addCoupon(req.body).then(() => {
+      console.log('addCoupon', req.body)
+      res.redirect('coupon')
+    }).catch((err) => {
+      req.session.errmess = err;
+      res.redirect('back')
+    })
+  } else {
+    res.redirect('/admin/login')
+  }
+})
+
+router.get('/deleteCoupon/:id', (req, res) => {
+  if (req.session.adminLoggedIn) {
+    couponHelpers.deleteCoupon(req.params.id).then(() => {
+      res.redirect('back')
+    })
   }
 })
 

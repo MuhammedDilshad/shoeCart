@@ -100,13 +100,7 @@
                                                 placeholder="Enter Your Address">
                                         </div>
                                     </div>
-                                    {{!-- <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="email">E-mail Address</label>
-                                            <input type="text" name="email" id="email" class="form-control"
-                                                placeholder="State Province">
-                                        </div>
-                                    </div> --}}
+                                   
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="Phone">Phone Number</label>
@@ -268,13 +262,12 @@
                 method: 'post',
                 data: $('#checkoutForm').serialize(),
                 success: (response) => {
-                    console.log('ajax', (response))
-
+                    
                     if (response.codeSuccess) {
-                        alert('placed')
+                       // alert('placed')
                         location.href = '/orderPlaced'
                     } else {
-                        alert(response)
+                        //alert(response)
                         razorPayPayment(response)
                     }
                 }
@@ -311,7 +304,6 @@
             rzp1.open()
         }
         function verifyPayment(Payment, order) {
-            console.log(123)
             $.ajax({
                 url: '/verify-Payment',
                 data: {
