@@ -264,10 +264,8 @@
                 success: (response) => {
                     
                     if (response.codeSuccess) {
-                       // alert('placed')
                         location.href = '/orderPlaced'
                     } else {
-                        //alert(response)
                         razorPayPayment(response)
                     }
                 }

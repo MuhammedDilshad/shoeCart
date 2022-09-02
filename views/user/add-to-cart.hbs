@@ -8,7 +8,7 @@
 
 <body>
 
-    <div id="page">
+    <div id="page" class="col-sm-12">
         <nav class="colorlib-nav" role="navigation">
             <div class="sale">
                 <div class="container">
@@ -56,23 +56,23 @@
                 <div id="aaa" class="row row-pb-lg ">
                     <div class="col-md-12">
                         <div class="product-name d-flex">
-                            <div class="one-forth text-left px-4">
-                                <span>Product Details</span>
+                            <div class="one-forth text-left">
+                                <span>Product </span>
                             </div>
                             <div class="one-eight text-center">
-                                <span>size</span>
+                                <span>size </span>
                             </div>
                             <div class="one-eight text-center">
-                                <span>Price</span>
+                                <span>Price </span>
                             </div>
                             <div class="one-eight text-center">
-                                <span>Quantity</span>
+                                <span>Quantity </span>
                             </div>
                             <div class="one-eight text-center">
-                                <span>Total</span>
+                                <span>Total </span>
                             </div>
-                            <div class="one-eight text-center px-4">
-                                <span>Remove</span>
+                            <div class="one-eight text-center">
+                                <span>Remove </span>
                             </div>
                         </div>
                         {{#each products}}
@@ -109,7 +109,7 @@
                                         this.product.productData.price}}</span>
                                 </div>
                             </div>
-                            <div class="one-eight text-center mt-4">
+                            <div class=" text-center mt-4">
                                 <button class="btn btn-danger"
                                     onclick="removedProduct('{{this._id}}','{{this.product._id}}')">Remove</button>
                             </div>

@@ -267,7 +267,7 @@ module.exports = {
             let year = dateObj.getUTCFullYear();
             let day = dateObj.getUTCDate();
             let currentDate = day + "/" + month + "/" + year;
-            
+
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending'
             let orderObj = {
                 deliveryDetails: {
@@ -282,7 +282,7 @@ module.exports = {
                 products: products,
                 totalAmount: total,
                 status: status,
-                date:currentDate
+                date: currentDate
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
                 db.get().collection(collection.CART_COLLECTION).deleteOne({ user: ObjectId(order.userId) })
@@ -343,23 +343,35 @@ module.exports = {
             console.log('user ordered', orderItems);
         })
     },
-    editProfile: (data) => {
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.USER_COLLECTION).updateOne({ _id: ObjectId(data.userId) },
-                {
-                    $set: {
-                        Name: data.Name,
-                    }
-                }
-            ).then((res) => {
-                resolve(res)
-            })
-        })
-    },
     getUserData: (userId) => {
         return new Promise(async (resolve, reject) => {
             let userData = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: ObjectId(userId) })
             resolve(userData)
+        })
+    },
+    AddAddress: (data, userId) => {
+        console.log('11111111111', data);
+        console.log('2222222', userId);
+        return new Promise((resolve, reject) => {
+            data.userId = userId
+            console.log(userId);
+            db.get().collection(collection.ADRESS_COLLECTION).insertOne(data)
+            resolve()
+        })
+    },
+    getBillingDeatailes: (userDataId) => {
+        return new Promise(async (resolve, reject) => {
+            let deatailes = await db.get().collection(collection.ADRESS_COLLECTION).find({ userId: userDataId }).toArray()
+            resolve(deatailes)
+        })
+    },
+    deleteFromAddress: (addressId) => {
+        return new Promise((resolve, reject) => {
+            console.log('eeeeeeeeeeeee',addressId);
+            db.get().collection(collection.ADRESS_COLLECTION).deleteOne({_id:ObjectId(addressId)}).then((response)=>{
+                console.log('fffffff',response);
+                resolve({status:true})
+            })
         })
     }
 

@@ -12,6 +12,7 @@ const bannerHelpers = require('../helpers/banner-helpers');
 const { response } = require('../app');
 const session = require('express-session');
 const couponHelpers = require('../helpers/couponHelpers');
+const { Router } = require('express');
 
 /* GET home page. */
 const verifyLogin = (req, res, next) => {
@@ -197,10 +198,10 @@ router.get('/placeOrder', verifyLogin, async (req, res, next) => {
   let discount = null
   let WishlistCount = await wishlistHelpers.getWishlistCount(req.session.user._id)
   let cartCount = await userHelpers.getCartCount(req.session.user._id)
-  if(req.session.coupon){
-    total=req.session.discount
-  }else {
-  total = await userHelpers.getTotalAmount(req.session.user._id)
+  if (req.session.coupon) {
+    total = req.session.discount
+  } else {
+    total = await userHelpers.getTotalAmount(req.session.user._id)
   }
   let coupon = req.session.coupon
   res.render('user/checkout', { WishlistCount, coupon, discount, total, cartCount, user: true, user: req.session.user })
@@ -290,14 +291,11 @@ router.post('/deleteFromWishList', verifyLogin, (req, res, next) => {
 router.get('/userprofile', verifyLogin, async (req, res) => {
   let WishlistCount = await wishlistHelpers.getWishlistCount(req.session.user._id)
   let cartCount = await userHelpers.getCartCount(req.session.user._id)
-  res.render('user/userProfile', { user: req.session.user, WishlistCount, cartCount })
+  let deatailes = await userHelpers.getBillingDeatailes(req.session.user._id)
+  console.log('23232323', deatailes);
+  res.render('user/userProfile', { deatailes, user: req.session.user, WishlistCount, cartCount })
 })
 
-router.post('/editProfile', (req, res) => {
-  userHelpers.editProfile(req.body).then(() => {
-    res.redirect('/userProfile')
-  })
-})
 
 router.post('/applyCoupon', (req, res) => {
   couponHelpers.applyCoupon(req.body, req.session.user._id).then((response) => {
@@ -306,6 +304,26 @@ router.post('/applyCoupon', (req, res) => {
       req.session.coupon = response.coupon
       req.session.discount = response.discountTotal
     }
+    res.json(response)
+  })
+})
+
+router.get('/addBilingDetails', verifyLogin, async (req, res) => {
+  let WishlistCount = await wishlistHelpers.getWishlistCount(req.session.user._id)
+  let cartCount = await userHelpers.getCartCount(req.session.user._id)
+  res.render('user/BilingDetails', { user: req.session.user, WishlistCount, cartCount })
+})
+
+router.post('/addBilingDetails', (req, res) => {
+  userHelpers.AddAddress(req.body, req.session.user._id).then(() => {
+    res.redirect('/userprofile')
+  })
+})
+
+router.get('/deleteFromAddress/:id', (req, res) => {
+  userHelpers.deleteFromAddress(req.params.id).then((response) => {
+    console.log('dddddddddddd',response);
+
     res.json(response)
   })
 })
