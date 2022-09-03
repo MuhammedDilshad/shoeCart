@@ -198,24 +198,26 @@ router.get('/placeOrder', verifyLogin, async (req, res, next) => {
   let discount = null
   let WishlistCount = await wishlistHelpers.getWishlistCount(req.session.user._id)
   let cartCount = await userHelpers.getCartCount(req.session.user._id)
+  let userAddress=await userHelpers.getBillingDeatailes(req.session.user._id)
+  console.log('user address',userAddress);
   if (req.session.coupon) {
     total = req.session.discount
   } else {
     total = await userHelpers.getTotalAmount(req.session.user._id)
   }
   let coupon = req.session.coupon
-  res.render('user/checkout', { WishlistCount, coupon, discount, total, cartCount, user: true, user: req.session.user })
+  res.render('user/checkout', { userAddress,WishlistCount, coupon, discount, total, cartCount, user: true, user: req.session.user })
 })
 
 router.post('/placeOrder', verifyLogin, async (req, res, next) => {
   totalPrice = 0
-  let products = await userHelpers.getCartProductList(req.body.userId)
+  let products = await userHelpers.getCartProductList(req.session.user._id)
   if (req.session.discount) {
     totalPrice = req.session.discount
   } else {
-    totalPrice = await userHelpers.getTotalAmount(req.body.userId)
+    totalPrice = await userHelpers.getTotalAmount(req.session.user._id)
   }
-  userHelpers.placeOrder(req.body, products, totalPrice).then((orderId) => {
+  userHelpers.placeOrder(req.body, products, totalPrice,req.session.user._id).then((orderId) => {
     if (req.body['paymentMethod'] === 'COD') {
       res.json({ codeSuccess: true })
     } else {

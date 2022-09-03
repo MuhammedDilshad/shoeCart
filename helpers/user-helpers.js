@@ -260,24 +260,24 @@ module.exports = {
 
         })
     },
-    placeOrder: (order, products, total) => {
-        return new Promise((resolve, reject) => {
+    placeOrder: (order, products, total,userId) => {
+        return new Promise(async(resolve, reject) => {
             let dateObj = new Date();
             let month = dateObj.getUTCMonth() + 1;
             let year = dateObj.getUTCFullYear();
             let day = dateObj.getUTCDate();
             let currentDate = day + "/" + month + "/" + year;
-
+            let address = await db.get().collection(collection.ADRESS_COLLECTION).findOne({_id: ObjectId(order.addressId)})
             let status = order.paymentMethod === 'COD' ? 'placed' : 'pending'
             let orderObj = {
                 deliveryDetails: {
-                    mobile: order.mobile,
-                    fname: order.fname,
-                    lname: order.lname,
-                    address: order.address,
-                    pincode: order.pincode
+                    mobile: address.mobile,
+                    fname: address.fname,
+                    lname: address.lname,
+                    address: address.address,
+                    pincode: address.pincode
                 },
-                userId: ObjectId(order.userId),
+                userId: ObjectId(userId),
                 paymentMethod: order.paymentMethod,
                 products: products,
                 totalAmount: total,
@@ -285,7 +285,7 @@ module.exports = {
                 date: currentDate
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
-                db.get().collection(collection.CART_COLLECTION).deleteOne({ user: ObjectId(order.userId) })
+                db.get().collection(collection.CART_COLLECTION).deleteOne({ user: ObjectId(userId) })
                 resolve(response.insertedId)
             })
         })
