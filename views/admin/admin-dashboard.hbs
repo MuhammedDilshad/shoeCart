@@ -38,7 +38,7 @@
               </div>
               <div class="col-lg-4 col-md-4 order-1">
                 <div class="row">
-                  <div class="col-lg-6 col-md-12 col-6 mb-4">
+                  {{!-- <div class="col-lg-6 col-md-12 col-6 mb-4">
                     <div class="card">
                       <div class="card-body">
                         <div class="card-title d-flex align-items-start justify-content-between">
@@ -62,8 +62,8 @@
                         <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12 col-6 mb-4">
+                  </div> --}}
+                  {{!-- <div class="col-lg-6 col-md-12 col-6 mb-4">
                     <div class="card">
                       <div class="card-body">
                         <div class="card-title d-flex align-items-start justify-content-between">
@@ -87,7 +87,7 @@
                         <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
                       </div>
                     </div>
-                  </div>
+                  </div> --}}
                 </div>
               </div>
               <!-- Total Revenue -->
@@ -95,7 +95,7 @@
                 <div class="card">
                   <div class="row row-bordered g-0">
                     <div class="col-md-8">
-                      <h5 class="card-header m-0 me-2 pb-3">Total Revenue</h5>
+                      <h5 class="card-header m-0 me-2 pb-3">Sales Repport</h5>
                       <canvas id="myChart" class="px-2"></canvas>
                     </div>
                     <div class="col-md-4">
@@ -103,7 +103,7 @@
                         <div class="text-center">
                           <div class="dropdown">
                             <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
-                              id="growthReportId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              id="myChart" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               2022
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="growthReportId">
@@ -144,7 +144,7 @@
               <!--/ Total Revenue -->
               <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
                 <div class="row">
-                  <div class="col-6 mb-4">
+                  {{!-- <div class="col-6 mb-4">
                     <div class="card">
                       <div class="card-body">
                         <div class="card-title d-flex align-items-start justify-content-between">
@@ -168,8 +168,8 @@
                         <small class="text-danger fw-semibold"><i class="bx bx-down-arrow-alt"></i> -14.82%</small>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-6 mb-4">
+                  </div> --}}
+                  {{!-- <div class="col-6 mb-4">
                     <div class="card">
                       <div class="card-body">
                         <div class="card-title d-flex align-items-start justify-content-between">
@@ -193,10 +193,10 @@
                         <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
                       </div>
                     </div>
-                  </div>
+                  </div> --}}
                   <!-- </div>
     <div class="row"> -->
-                  <div class="col-12 mb-4">
+                  {{!-- <div class="col-12 mb-4">
                     <div class="card">
                       <div class="card-body">
                         <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
@@ -215,7 +215,7 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> --}}
                 </div>
               </div>
             </div>
@@ -367,7 +367,7 @@
               <!--/ Expense Overview -->
 
               <!-- Transactions -->
-              <div class="col-md-6 col-lg-4 order-2 mb-4">
+              {{!-- <div class="col-md-6 col-lg-4 order-2 mb-4">
                 <div class="card h-100">
                   <div class="card-header d-flex align-items-center justify-content-between">
                     <h5 class="card-title m-0 me-2">Transactions</h5>
@@ -478,7 +478,7 @@
                     </ul>
                   </div>
                 </div>
-              </div>
+              </div> --}}
               <!--/ Transactions -->
             </div>
           </div>
@@ -518,30 +518,55 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 
-  {{!-- <canvas id="myChart" style="width:100%;max-width:600px"></canvas> --}}
+{{!-- <canvas id="myChart" style="width:100%;max-width:600px"></canvas> --}}
 
-  <script>
-    var xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
-    var yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+<script>
+  console.log('{{{dailyTotalSales}}}')
+  let total = "{{{dialyTotalSales}}}"
+  
+  let date = "{{{SalesDate}}}"
+  console.log('123454321',date)
 
-    new Chart("myChart", {
-      type: "line",
-      data: {
-        labels: xValues,
-        datasets: [{
-          fill: false,
-          lineTension: 0,
-          backgroundColor: "rgba(0,0,255,1.0)",
-          borderColor: "rgba(0,0,255,0.1)",
-          data: yValues
-        }]
-      },
-      options: {
-        legend: { display: false },
-        scales: {
-          yAxes: [{ ticks: { min: 6, max: 16 } }],
+  
+
+  const totaId = total.split(",")
+  const dateId = date.split(",")
+
+  console.log('totaId',dateId)
+
+  var xValues =dateId;
+  var yValues =totaId;
+
+  new Chart("myChart", {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [{
+        fill: false,
+        lineTension: 0,
+        backgroundColor: "rgba(0,0,255,1.0)",
+        borderColor: "rgba(0,0,255,0.1)",
+        data: yValues
+      }]
+    },
+    options: {
+      legend: { display: false },
+      xAxes:{
+        display:true,
+        type:'time',
+        time:{
+          parser:'MM/DD/YYYY HH:mm',
+          tooltipFormat:'ll HH:mm',
+          unit:'day',
+          unitStepSize:1,
+          displayFormats:{
+            'day':'MM/DD/YYYY'
+          }
         }
+      },
+      scales: {
+        yAxes: [{ ticks: { min: 1000, max: 1000000 } }],
       }
-    });
-  </script>
-
+    }
+  });
+</script>

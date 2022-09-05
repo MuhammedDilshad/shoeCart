@@ -12,11 +12,15 @@ const couponHelpers = require('../helpers/couponHelpers')
 
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/', async (req, res, next)=>{
   res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
   if (req.session.adminLoggedIn) {
-    res.render('admin/admin-dashboard', { layout: 'adminlayout', admin: true, });
+    let dialyTotalSales = await adminHelper.dialyTotalSales()
+    let SalesDate = await adminHelper.SalesDate()
+    let arrayLength = dialyTotalSales.length - 1
+    let dailySales = dialyTotalSales[arrayLength]
+    res.render('admin/admin-dashboard', { dialyTotalSales,SalesDate,layout: 'adminlayout', admin: true, });
   } else {
     res.redirect('/admin/login');
   }
@@ -271,9 +275,15 @@ router.get('/deleteBanner/:id', (req, res) => {
   }
 })
 
-router.get('/dashBoard', (req, res) => {
+router.get('/dashBoard', async (req, res) => {
   if (req.session.adminLoggedIn) {
-    res.render('admin/admin-dashboard', { layout: 'adminlayout', admin: true })
+    let dialyTotalSales = await adminHelper.dialyTotalSales()
+    let SalesDate = await adminHelper.SalesDate()
+    let arrayLength = dialyTotalSales.length - 1
+    let dailySales = dialyTotalSales[arrayLength]
+    console.log('dailySales',dailySales);
+    console.log('salesDate',SalesDate);
+    res.render('admin/admin-dashboard', { SalesDate, dialyTotalSales, layout: 'adminlayout', admin: true })
   } else {
     res.redirect('/admin/login')
   }

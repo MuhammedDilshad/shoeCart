@@ -92,18 +92,92 @@ module.exports = {
     updateStatus: (orderId, orderDetails) => {
         console.log('update stataus called');
         return new Promise(async (resolve, reject) => {
-            let order = await db.get().collection(collection.ORDER_COLLECTION).findOne({ status:orderDetails })
-            if (order){
+            let order = await db.get().collection(collection.ORDER_COLLECTION).findOne({ status: orderDetails })
+            if (order) {
                 reject('you cant same status')
-            }else{
-                db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:ObjectId(orderId)},
-                {
-                    $set:{'status':orderDetails.status}
-                }
-                ).then(()=>{
+            } else {
+                db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: ObjectId(orderId) },
+                    {
+                        $set: { 'status': orderDetails.status }
+                    }
+                ).then(() => {
                     resolve()
                 })
             }
+        })
+    },
+    SalesDate: () => {
+        return new Promise(async (resolve, reject) => {
+          let  total = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $project: {
+                        totalAmount: 1,
+                        date: 1
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$date',
+                        total: { $sum: '$totalAmount' }
+                    }
+                },
+                {
+                    $sort: {
+                        _id: 1
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        total: 0
+                    }
+                },
+                {
+                    $limit: 7
+                }
+            ]).toArray()
+            var totalId = total.map(function (item) {
+                return item['_id']
+            })
+            resolve(totalId)
+            console.log('totalId',totalId);
+        })
+    },
+    dialyTotalSales: () => {
+        return new Promise(async (resolve, reject) => {
+          let  total = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $project: {
+                        totalAmount: 1,
+                        date: 1
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$date',
+                        total: { $sum: '$totalAmount' }
+                    }
+                },
+                {
+                    $sort: {
+                        _id: 1
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        total: 1
+                    }
+                },
+                {
+                    $limit: 7
+                }
+            ]).toArray()
+            var totalId = total.map(function (item) {
+                return item['total']
+            })
+            resolve(totalId)
+            console.log('totalId2323',totalId);
         })
     }
 
